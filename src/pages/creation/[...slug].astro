@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content'
 import Layout from '@layouts/Layout.astro'
+import Container from "@components/Container.astro";
 
 type CreationEntry = CollectionEntry<'creation'>
 
@@ -16,8 +17,10 @@ const { entry } = Astro.props
 const { Content } = await entry.render()
 ---
 
-<Layout title={entry.data.title}>
-	<div class='prose prose:lg md:prose-xl [&>*]:mb-4 dark:prose-invert min-w-full'>
+<Layout title={entry.data.title} description='entry.data.description'>
+	<Container>
+	<div class='prose prose:lg md:prose-xl *:mb-4 dark:prose-invert min-w-full'>
 		<Content />
 	</div>
+	</Container>
 </Layout>

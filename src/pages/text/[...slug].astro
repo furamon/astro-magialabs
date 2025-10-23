@@ -1,23 +1,28 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content'
-import Layout from '@layouts/Layout.astro'
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import Container from '@components/Container.astro';
 
-type TextEntry = CollectionEntry<'text'>
+type TextEntry = CollectionEntry<'text'>;
 
 export async function getStaticPaths() {
-	const entries: TextEntry[] = await getCollection('text')
-	return entries.map((entry) => ({
-		params: { slug: entry.slug },
-		props: { entry }
-	}))
+    const entries: TextEntry[] = await getCollection('text');
+    return entries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
 }
 
-const { entry } = Astro.props
-const { Content } = await entry.render()
+const { entry } = Astro.props;
+const { Content } = await entry.render();
 ---
 
-<Layout title={entry.data.title}>
-	<div class='prose prose:lg md:prose-xl [&>*]:mb-4 dark:prose-invert min-w-full'>
-		<Content />
-	</div>
+<Layout title={entry.data.title} description="entry.data.description">
+    <Container>
+        <div
+            class="prose prose:lg md:prose-xl dark:prose-invert min-w-full [&>*]:mb-4"
+        >
+            <Content />
+        </div>
+    </Container>
 </Layout>

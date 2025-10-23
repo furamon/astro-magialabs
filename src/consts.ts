@@ -18,10 +18,28 @@ export const BLOG: Metadata = {
   DESCRIPTION: "A collection of articles on topics I am passionate about.",
 };
 
-export const PROJECTS: Metadata = {
-  TITLE: "Projects",
+export const CREATION: Metadata = {
+  TITLE: "creation",
   DESCRIPTION:
-    "A collection of my projects with links to repositories and live demos.",
+    "A collection of my creation with links to repositories and live demos.",
+};
+
+export const GAME: Metadata = {
+  TITLE: "game",
+  DESCRIPTION:
+    "A collection of my game with links to repositories and live demos.",
+};
+
+export const LILY: Metadata = {
+  TITLE: "lily",
+  DESCRIPTION:
+    "A collection of my lily with links to repositories and live demos.",
+};
+
+export const TEXT: Metadata = {
+  TITLE: "text",
+  DESCRIPTION:
+    "A collection of my text with links to repositories and live demos.",
 };
 
 export const SOCIALS: Socials = [

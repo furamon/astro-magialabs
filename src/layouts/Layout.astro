@@ -11,6 +11,7 @@ type Props = {
 };
 
 const { title, description } = Astro.props;
+const isLilyPage = Astro.url.pathname.startsWith("/lily");
 ---
 
 <!doctype html>
@@ -18,7 +19,7 @@ const { title, description } = Astro.props;
   <head>
     <Head title={`${title} | ${SITE.TITLE}`} description={description} />
   </head>
-  <body>
+  <body class:list={{ "lily-page": isLilyPage }}>
     <noscript>
       <style>
         .animate{
@@ -29,6 +30,7 @@ const { title, description } = Astro.props;
     </noscript>
     <Header />
     <main>
+      <h1 class='text-5xl font-bold mx-auto mb-8 max-w-(--breakpoint-lg)'>{title}</h1>
       <slot />
     </main>
     <Footer />
