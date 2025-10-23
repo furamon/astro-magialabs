@@ -1,145 +1,104 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Container from "@components/Container.astro";
-import { SITE, HOME, SOCIALS } from "@consts";
-import ArrowCard from "@components/ArrowCard.astro";
-import Link from "@components/Link.astro";
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import Layout from '@layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkGfm from 'remark-gfm'
+import remarkRehype from 'remark-rehype'
+import rehypeStringify from 'rehype-stringify'
+import SSGForm from '../components/SSGForm.astro'
+import Container from '@components/Container.astro'
 
-const blog = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
+const posts = (await getCollection('blog')).filter((post) => !post.data.draft)
 
-const projects: CollectionEntry<"projects">[] = (
-  await getCollection("projects")
-)
-  .filter((project) => !project.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+
+const latestPostEntry = sortedPosts[0]
+const latestPostLink = latestPostEntry ? `/${latestPostEntry.collection}/${latestPostEntry.id}` : null
+const latestPost = latestPostEntry?.body
+	? String(
+			await unified()
+				.use(remarkParse)
+				.use(remarkGfm)
+				.use(remarkRehype)
+				.use(rehypeStringify)
+				.process(latestPostEntry.body)
+		)
+	: ''
+
+
 ---
 
-<Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
-  <Container>
-    <aside data-pagefind-ignore>
-      <h1 class="font-semibold text-black dark:text-white">
-        Introducing Astro Micro 🔬
-      </h1>
-      <div class="space-y-16">
-        <section>
-          <article class="space-y-4">
-            <span>
-              <p>
-                Astro Micro is an accessible theme for <Link
-                  href="https://astro.build/">Astro</Link
-                >. It's a fork of
-                <Link href="https://github.com/markhorn-dev">
-                  Mark Horn's
-                </Link> popular theme <Link
-                  href="https://astro.build/themes/details/astronano/"
-                  >Astro Nano</Link
-                >. Like Nano, Micro comes with zero frameworks installed.
-              </p>
-              <p>
-                Micro adds features like <Link href="https://pagefind.app/"
-                  >Pagefind</Link
-                > for search, <Link href="https://giscus.app">Giscus</Link> for comments,
-                and more. For a full list of changes, see this <Link
-                  href="/blog/00-micro-changelog">blog post</Link
-                >.
-              </p>
-            </span>
-            <span class="animate">
-              <p>
-                Micro still comes with everything great about Nano — full type
-                safety, a sitemap, an RSS feed, and Markdown + MDX support.
-                Styled with TailwindCSS and preconfigured with system, light,
-                and dark themes.
-              </p>
-              <p>
-                Visit
-                <Link href="https://github.com/trevortylerlee/astro-micro">
-                  Astro Micro on GitHub
-                </Link>
-                to fork the repository to get started.
-              </p>
-            </span>
-          </article>
-        </section>
+<Layout title='Home', description='ゲーム攻略、百合作品などのサイト。'>
+	<Container>
 
-        <section class="animate space-y-6">
-          <div class="flex flex-wrap items-center justify-between gap-y-2">
-            <h2 class="font-semibold text-black dark:text-white">
-              Latest posts
-            </h2>
-            <Link href="/blog"> See all posts </Link>
-          </div>
-          <ul class="not-prose flex flex-col gap-4">
-            {
-              blog.map((post) => (
-                <li>
-                  <ArrowCard entry={post} />
-                </li>
-              ))
-            }
-          </ul>
-        </section>
+	<div class='container mx-auto text-center text-xl font-bold'>
+		ゲーム攻略、百合作品などのサイト。
+	</div>
+	<div
+		class='container flex flex-col md:flex-row flex-auto mx-auto [&_a]:block [&>div]:w-full [&>div]:flex-auto [&>div]:flex-col [&>div]:text-center [&>div>a]:text-4xl [&>div>p]:text-4xl [&>div>*]:font-medium [&>div>*]:tracking-wide [&>div>*]:m-4 [&>div>a]:underline [&>div>div]:flex [&>div>div]:flex-col [&>div>div]:gap-2'
+	>
+		<div>
+			<a href='/game'>Game</a>
+			<div>
+				<a href='/game/guide' class='btn-game'> PlayGuide</a>
+				<a href='/game/playdiary' class='btn-game'> PlayDiary</a>
+				<a href='/game/talk' class='btn-game'> TalkRoom</a>
+				<a
+					href='https://www.notion.so/furamon913/cd55e04977734af082130ce34477dc31?v=5d7d04f5d1e84bc4ab45625fddd98475&pvs=4'
+					class='btn-game'
+				>
+					GameList</a
+				>
+			</div>
+		</div>
+		<div>
+			<a href='/creation'>Creation</a>
+			<div>
+				<a href='/creation/dearclaudias' class='btn-game'>Dear Claudias</a>
+				<a href='/creation/lightningrubellum' class='btn-game'>Lightning Rubellum</a>
+			</div>
+			<a href='/lily'>Lily</a>
+			<div>
+			</div>
+		</div>
+		<div>
+			<p>etc.</p>
+			<div>
+				<a href='/text/infomation' class='btn-game'> Infomation</a>
+				<a href='/text' class='btn-game'> Text</a>
+				<a href='/blog' class='btn-game'> Diary</a>
+				<a href='https://claudias.magialabs.blog/' class='btn-game'> Mastodon Server</a>
+				<a href='https://discord.com/invite/JfE32Nhhzb' class='btn-game'> Discord</a>
+			</div>
+			<p>Some Links</p>
+			<div>
+				<a href='https://www.pixiv.net/users/74381242' class='btn-game'> Pixiv</a>
+				<a href='https://m.youtube.com/channel/UCmoakOUjAai3AW1d2Ip_wxg' class='btn-game'>
+					YouTube</a
+				>
+				<a href='https://github.com/Furamon' class='btn-game'> Github</a>
+				<a href='https://twitter.com/FuramonMagia' class='btn-game'> X（Twitter）</a>
+			</div>
+		</div>
+	</div>
 
-        <section class="animate space-y-6">
-          <div class="flex flex-wrap items-center justify-between gap-y-2">
-            <h2 class="font-semibold text-black dark:text-white">
-              Recent projects
-            </h2>
-            <Link href="/projects"> See all projects </Link>
-          </div>
-          <ul class="not-prose flex flex-col gap-4">
-            {
-              projects.map((project) => (
-                <li>
-                  <ArrowCard entry={project} />
-                </li>
-              ))
-            }
-          </ul>
-        </section>
+	<div class='container mx-auto text-center'>
+		<h2 class='text-3xl font-bold mb-4'>最終更新</h2>
+		<h3 class='text-2xl font-bold'>
+			{
+				latestPostEntry && latestPostLink && (
+					<a href={latestPostLink}>{latestPostEntry.data.title}</a>
+				)
+			}
+		</h3>
+	</div>
 
-        <section class="animate space-y-4">
-          <h2 class="font-semibold text-black dark:text-white">
-            Let's Connect
-          </h2>
-          <article>
-            <p>
-              If you want to get in touch with me about something or just to say
-              hi, reach out on social media or send me an email.
-            </p>
-          </article>
-          <ul class="not-prose flex flex-wrap gap-2">
-            {
-              SOCIALS.map((SOCIAL) => (
-                <li class="flex gap-x-2 text-nowrap">
-                  <Link
-                    href={SOCIAL.HREF}
-                    external
-                    aria-label={`${SITE.TITLE} on ${SOCIAL.NAME}`}
-                  >
-                    {SOCIAL.NAME}
-                  </Link>
-                  {"/"}
-                </li>
-              ))
-            }
-            <li class="line-clamp-1">
-              <Link
-                href={`mailto:${SITE.EMAIL}`}
-                aria-label={`Email ${SITE.TITLE}`}
-              >
-                {SITE.EMAIL}
-              </Link>
-            </li>
-          </ul>
-        </section>
-      </div>
-    </aside>
-  </Container>
+	<div class='text-xl leading-loose' set:html={latestPost} />
+
+	<SSGForm />
+	</Container>
 </Layout>
+<style>
+	@reference "src/styles/global.css";
+</style>

@@ -16,9 +16,16 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+webhook.json
+src/components/SSGForm.astro
+deploy.sh
 
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+# ETC
+draft
+*.zip

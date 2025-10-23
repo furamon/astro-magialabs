@@ -1,27 +1,30 @@
-import { defineCollection, z } from "astro:content";
-import { glob } from 'astro/loaders';
+import { defineCollection, z } from 'astro:content';
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: "./src/content/blog" }),
   schema: z.object({
-    title: z.string(),
+    title: z.string().max(80),
     description: z.string(),
     date: z.coerce.date(),
-    draft: z.boolean().optional(),
-    tags: z.array(z.string()).optional(),
+    draft: z.boolean().default(false),
   }),
 });
 
-const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: "./src/content/projects" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    draft: z.boolean().optional(),
-    demoURL: z.string().optional(),
-    repoURL: z.string().optional(),
-  }),
-});
+const pageCollectionSchema = () =>
+  z.object({
+    title: z.string().max(80),
+    date: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+  });
 
-export const collections = { blog, projects };
+const creation = defineCollection({ schema: pageCollectionSchema() });
+const game = defineCollection({ schema: pageCollectionSchema() });
+const lily = defineCollection({ schema: pageCollectionSchema() });
+const text = defineCollection({ schema: pageCollectionSchema() });
+
+export const collections = {
+  blog,
+  creation,
+  game,
+  lily,
+  text,
+};
