@@ -11,18 +11,37 @@ export interface Heading {
   text: string;
 }
 
-function buildToc(headings: Heading[]) {
-  const toc: Heading[] = [];
-  const parentHeadings = new Map();
-  headings.forEach((h) => {
-    const heading = { ...h, subheadings: [] };
+export interface TocHeading extends Heading {
+  subheadings: TocHeading[];
+}
+
+function buildToc(headings: Heading[]): TocHeading[] {
+  const toc: TocHeading[] = [];
+  const parentHeadings = new Map<number, TocHeading>();
+
+  headings.forEach((headingDefinition) => {
+    const heading: TocHeading = { ...headingDefinition, subheadings: [] };
     parentHeadings.set(heading.depth, heading);
+
     if (heading.depth === 2) {
       toc.push(heading);
+      return;
+    }
+
+    let parentDepth = heading.depth - 1;
+    while (parentDepth >= 2 && !parentHeadings.get(parentDepth)) {
+      parentDepth -= 1;
+    }
+
+    const parent = parentHeadings.get(parentDepth);
+
+    if (parent) {
+      parent.subheadings.push(heading);
     } else {
-      parentHeadings.get(heading.depth - 1).subheadings.push(heading);
+      toc.push(heading);
     }
   });
+
   return toc;
 }
 ---

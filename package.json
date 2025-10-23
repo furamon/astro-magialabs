@@ -13,7 +13,8 @@
     "@astro-community/astro-embed-youtube": "^0.5.7",
     "@astrojs/check": "^0.9.5",
     "@astrojs/mdx": "^4.3.8",
-    "@astrojs/rss": "^4.0.12",
+    "@astrojs/react": "^4.4.0",
+    "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource/geist-mono": "^5.2.7",
     "@fontsource/geist-sans": "^5.2.5",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
+    "@types/react": "^19.2.2",
     "pagefind": "^1.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
