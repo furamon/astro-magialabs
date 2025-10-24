@@ -77,6 +77,10 @@
     @apply flex-1 py-32;
   }
 
+  img {
+    @apply mx-auto text-center;
+  }
+
   footer {
     @apply py-6 text-sm;
   }
