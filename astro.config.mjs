@@ -17,5 +17,5 @@ export default defineConfig({
       theme: "css-variables",
     },
   },
-	outDir: '/var/www/magia-laboratory'
+  outDir: "/var/www/magia-laboratory",
 });
