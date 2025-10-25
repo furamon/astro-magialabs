@@ -10,19 +10,25 @@ import TableOfContents from "@components/TableOfContents.astro";
 import Giscus from "@components/Giscus.astro";
 
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog"))
-    .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-  return posts.map((post) => ({
+  const posts: CollectionEntry<"blog">[] = (await getCollection("blog"))
+    .filter((post: CollectionEntry<"blog">) => !post.data.draft)
+    .sort(
+      (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
+        b.data.date.valueOf() - a.data.date.valueOf()
+    );
+  return posts.map((post: CollectionEntry<"blog">) => ({
     params: { id: post.id },
     props: post,
   }));
 }
 type Props = CollectionEntry<"blog">;
 
-const posts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts: CollectionEntry<"blog">[] = (await getCollection("blog"))
+  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
+  .sort(
+    (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
+      b.data.date.valueOf() - a.data.date.valueOf()
+  );
 
 function getNextPost() {
   let postIndex;
@@ -47,9 +53,10 @@ function getPrevPost() {
 const nextPost = getNextPost();
 const prevPost = getPrevPost();
 
-const post = Astro.props;
+const post = Astro.props as Props;
 const { Content, headings } = await render(post);
-const tags = post.data.tags ?? [];
+const tags: string[] = post.data.tags ?? [];
+
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
@@ -74,7 +81,7 @@ const tags = post.data.tags ?? [];
       </h1>
       {tags.length > 0 ? (
         <div class="animate flex gap-2 pt-1">
-          {tags.map((tag) => (
+          {tags.map((tag: string) => (
             <a
               href={`/tags/${tag}`}
               class="rounded-sm border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
