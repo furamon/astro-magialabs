@@ -88,14 +88,22 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
 
         const lightThemeButton = document.getElementById('light-theme-button');
         lightThemeButton?.addEventListener('click', () => {
-            localStorage.setItem('theme', 'light');
+            try {
+                localStorage.setItem('theme', 'light');
+            } catch (e) {
+                console.warn('localStorage is not available:', e);
+            }
             toggleTheme(false);
             updateThemeButtons();
         });
 
         const darkThemeButton = document.getElementById('dark-theme-button');
         darkThemeButton?.addEventListener('click', () => {
-            localStorage.setItem('theme', 'dark');
+            try {
+                localStorage.setItem('theme', 'dark');
+            } catch (e) {
+                console.warn('localStorage is not available:', e);
+            }
             toggleTheme(true);
             updateThemeButtons();
         });
@@ -104,7 +112,11 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
             'system-theme-button'
         );
         systemThemeButton?.addEventListener('click', () => {
-            localStorage.setItem('theme', 'system');
+            try {
+                localStorage.setItem('theme', 'system');
+            } catch (e) {
+                console.warn('localStorage is not available:', e);
+            }
             toggleTheme(
                 window.matchMedia('(prefers-color-scheme: dark)').matches
             );
@@ -114,7 +126,14 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
         window
             .matchMedia('(prefers-color-scheme: dark)')
             .addEventListener('change', (event) => {
-                if (localStorage.theme === 'system') {
+                let theme;
+                try {
+                    theme = localStorage.theme;
+                } catch (e) {
+                    console.warn('localStorage is not available:', e);
+                    theme = 'system';
+                }
+                if (theme === 'system') {
                     toggleTheme(event.matches);
                 }
             });
@@ -123,7 +142,14 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
     }
 
     function updateThemeButtons() {
-        const theme = localStorage.getItem('theme');
+        let theme;
+        try {
+            theme = localStorage.getItem('theme');
+        } catch (e) {
+            console.warn('localStorage is not available:', e);
+            theme = 'system';
+        }
+
         const lightThemeButton = document.getElementById('light-theme-button');
         const darkThemeButton = document.getElementById('dark-theme-button');
         const systemThemeButton = document.getElementById(
@@ -210,18 +236,40 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
     }
 
     function preloadTheme() {
-        const userTheme = localStorage.theme;
+        try {
+            let userTheme;
+            try {
+                userTheme = localStorage.theme;
+            } catch (e) {
+                console.warn('localStorage is not available:', e);
+                userTheme = null;
+            }
 
-        if (userTheme === 'light' || userTheme === 'dark') {
-            toggleTheme(userTheme === 'dark');
-        } else {
-            toggleTheme(
-                window.matchMedia('(prefers-color-scheme: dark)').matches
-            );
+            if (userTheme === 'light' || userTheme === 'dark') {
+                toggleTheme(userTheme === 'dark');
+            } else {
+                toggleTheme(
+                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                );
+            }
+        } catch (error) {
+            console.error('Error in preloadTheme:', error);
+            // Fallback to light theme if everything fails
+            try {
+                document.documentElement.classList.remove('dark');
+            } catch (e) {
+                // Even this failed, just continue
+            }
         }
     }
 
     function addCopyCodeButtons() {
+        // Check if clipboard API is available
+        if (!navigator.clipboard) {
+            console.warn('Clipboard API is not available');
+            return;
+        }
+
         let copyButtonLabel = '📋';
         let codeBlocks = Array.from(document.querySelectorAll('pre'));
 
@@ -230,12 +278,20 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
             const buttonText = copyButton.innerText;
             const textToCopy = codeText.replace(buttonText, '');
 
-            await navigator.clipboard.writeText(textToCopy);
-            copyButton.innerText = '✅';
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                copyButton.innerText = '✅';
 
-            setTimeout(() => {
-                copyButton.innerText = copyButtonLabel;
-            }, 2000);
+                setTimeout(() => {
+                    copyButton.innerText = copyButtonLabel;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text:', err);
+                copyButton.innerText = '❌';
+                setTimeout(() => {
+                    copyButton.innerText = copyButtonLabel;
+                }, 2000);
+            }
         }
 
         for (let codeBlock of codeBlocks) {
@@ -272,5 +328,11 @@ const { title, description, image = '/astro-micro.jpg' } = Astro.props;
 
     document.addEventListener('DOMContentLoaded', () => init());
     document.addEventListener('astro:after-swap', () => init());
-    preloadTheme();
+
+    // Safely preload theme immediately to avoid FOUC
+    try {
+        preloadTheme();
+    } catch (error) {
+        console.error('Failed to preload theme:', error);
+    }
 </script>
