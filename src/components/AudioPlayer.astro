@@ -1,0 +1,98 @@
+---
+interface Props {
+    /**
+     * 音声ファイルのパス（/music/から始まる相対パス）
+     */
+    src: string;
+    /**
+     * 音声プレイヤーのタイトル（オプション）
+     */
+    title?: string;
+    /**
+     * 曲の説明・作曲のポイントなど（オプション）
+     */
+    description?: string;
+    /**
+     * 自動再生を有効にするかどうか（デフォルト: false）
+     */
+    autoplay?: boolean;
+    /**
+     * コントロールを表示するかどうか（デフォルト: true）
+     */
+    controls?: boolean;
+}
+
+const {
+    src,
+    title,
+    description,
+    autoplay = false,
+    controls = true,
+} = Astro.props;
+
+const audioPath = `/music/${src}`;
+// ファイル名
+const fileName = src.split('/').pop() ?? src;
+// ファイル名から一意のIDを生成（スラッシュとドットを除去）
+const audioId = src.replace(/[/.]/g, '-');
+---
+
+<div
+    class="audio-player"
+    data-filename={fileName}
+    data-provided-title={title ?? ''}
+    }
+>
+    <div class="audio-header">
+        <h4 class="audio-title" id={`title-${audioId}`}>
+            {title} / {fileName}
+        </h4>
+    </div>
+    {description && <p class="audio-description">{description}</p>}
+    <audio
+        id={`audio-${audioId}`}
+        src={audioPath}
+        {autoplay}
+        {controls}
+        preload="metadata"
+    >
+        <p>お使いのブラウザは音声再生をサポートしていません。</p>
+    </audio>
+</div>
+
+<style>
+    .audio-player {
+        margin: 1.5rem 0;
+        padding: 1.25rem;
+        border-radius: 0.5rem;
+        background-color: var(--bg-secondary, #f5f5f5);
+        border: 1px solid var(--border-color, #e0e0e0);
+    }
+
+    .audio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+    }
+
+    .audio-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary, #333);
+        flex: 1;
+    }
+
+    .audio-description {
+        margin: 0 0 0.75rem 0;
+        font-size: 0.95rem;
+        color: var(--text-secondary, #666);
+        line-height: 1.5;
+    }
+
+    audio {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+</style>
