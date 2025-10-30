@@ -7,7 +7,6 @@ import { readingTime } from "@lib/utils";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
-import Giscus from "@components/Giscus.astro";
 
 export async function getStaticPaths() {
   const posts: CollectionEntry<"blog">[] = (await getCollection("blog"))
@@ -74,7 +73,7 @@ const tags: string[] = post.data.tags ?? [];
           <div class="font-base text-sm">
             {readingTime(post.body)}
           </div>
-        )}        
+        )}
       </div>
       <h1 class="animate text-3xl font-semibold text-black dark:text-white">
         {post.data.title}
@@ -97,9 +96,6 @@ const tags: string[] = post.data.tags ?? [];
       <Content />
       <div class="mt-24">
         <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-      </div>
-      <div class="mt-24">
-        <Giscus />
       </div>
     </article>
   </Container>
